@@ -5,21 +5,46 @@ const { magnoliaTransform } = require("./magnoliaUtils");
 
 const app = express();
 
-app.get("/.rest/delivery/pages/:path(*)", (req, res) => {
-  const path = req.params.path;
-  const content = get(app.locals.content, path.split("/").filter(Boolean));
-
-  console.info({ path });
+const getPage = (path) => {
+  const target = path.split("/").filter(Boolean);
+  const content = get(app.locals.content, target);
 
   if (content) {
-    const page = magnoliaTransform(content, path);
-    res.json(page);
+    return magnoliaTransform(content, path);
+  }
+};
+
+app.get("/.rest/delivery/pages/:path(*)/@nodes", (req, res) => {
+  const page = getPage(req.params.path);
+
+  console.info({ request: req.originalUrl, path: req.params.path });
+
+  if (page) {
+    const children = [];
+
+    page["@nodes"].forEach((node) => {
+      if (page[node]["@nodeType"] === "mgnl:page") {
+        children.push(page[node]);
+      }
+    });
+
+    res.json(children);
   } else {
     res.status(404).send("Page not found.");
   }
 });
 
-// app.get("/.rest/delivery/pages/:path(*)/@nodes", (req, res) => {});
+app.get("/.rest/delivery/pages/:path(*)", (req, res) => {
+  const page = getPage(req.params.path);
+
+  console.info({ request: req.originalUrl, path: req.params.path });
+
+  if (page) {
+    res.json(page);
+  } else {
+    res.status(404).send("Page not found.");
+  }
+});
 
 async function bootstrap() {
   try {

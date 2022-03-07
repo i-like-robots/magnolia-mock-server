@@ -1,3 +1,5 @@
+const urlJoin = require("proper-url-join");
+
 function isNode(node) {
   return node ? typeof node["jcr:uuid"] === "string" : false;
 }
@@ -65,7 +67,7 @@ function transformNodes(node, path) {
     const item = data[key];
 
     if (isNode(item)) {
-      const basePath = `${path}/${key}`;
+      const basePath = urlJoin(path, key);
       data[key] = transformNodes(item, basePath);
     }
   });

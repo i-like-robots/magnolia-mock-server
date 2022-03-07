@@ -61,9 +61,8 @@ function transformNode(node, path) {
 
 function transformNodes(node, path) {
   const data = transformNode(node, path);
-  const keys = Object.keys(data);
 
-  keys.forEach((key) => {
+  Object.keys(data).forEach((key) => {
     const item = data[key];
 
     if (isNode(item)) {
@@ -76,7 +75,7 @@ function transformNodes(node, path) {
 }
 
 function magnoliaTransform(content, path) {
-  return transformNodes(content, path);
+  return transformNodes(content, urlJoin(path));
 }
 
 module.exports = { magnoliaTransform };

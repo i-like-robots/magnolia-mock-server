@@ -1,18 +1,26 @@
 const urlJoin = require("proper-url-join");
 
+function getNodeID(node) {
+  return node["jcr:uuid"] || node["@id"] || null;
+}
+
+function getNodeType(node) {
+  return node["jcr:primaryType"] || node["@nodeType"] || null;
+}
+
 function isNode(node) {
-  return node ? typeof node["jcr:uuid"] === "string" : false;
+  return node ? typeof getNodeID(node) === "string" : false;
 }
 
 function isPage(node) {
-  return isNode(node) && node["jcr:primaryType"] === "mgnl:page";
+  return isNode(node) && getNodeType(node) === "mgnl:page";
 }
 
 function isArea(node) {
-  return isNode(node) && node["jcr:primaryType"] === "mgnl:area";
+  return isNode(node) && getNodeType(node) === "mgnl:area";
 }
 
-function isContent(node, name) {
+function isMultiField(node, name) {
   return isNode(node) && node.hasOwnProperty(`${name}0`);
 }
 
@@ -27,7 +35,7 @@ function getAreaNodes(node) {
   return Object.keys(node).filter((key) => regexp.test(key));
 }
 
-function getContentNodes(node, name) {
+function getMultiFieldNodes(node, name) {
   const regexp = new RegExp(`^${name}\\d+$`);
   return Object.keys(node).filter((key) => regexp.test(key));
 }
@@ -52,8 +60,8 @@ function transformNode(node, path) {
     append["@nodes"].push(...getPageNodes(node));
   } else if (isArea(node)) {
     append["@nodes"].push(...getAreaNodes(node));
-  } else if (isContent(node, name)) {
-    append["@nodes"].push(...getContentNodes(node, name));
+  } else if (isMultiField(node, name)) {
+    append["@nodes"].push(...getMultiFieldNodes(node, name));
   }
 
   return { ...append, ...node, ...remove };
@@ -83,7 +91,7 @@ function getMagnoliaChildren(page) {
   const children = [];
 
   page["@nodes"].forEach((node) => {
-    if (page[node]["@nodeType"] === "mgnl:page") {
+    if (isPage(page[node])) {
       children.push(page[node]);
     }
   });

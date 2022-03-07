@@ -1,7 +1,7 @@
 const express = require("express");
 const get = require("just-safe-get");
 const { getContent } = require("./contentUtils");
-const { magnoliaTransform } = require("./magnoliaUtils");
+const { getMagnoliaContent, getMagnoliaChildren } = require("./magnoliaUtils");
 
 const app = express();
 
@@ -10,7 +10,7 @@ const getPage = (path) => {
   const content = get(app.locals.content, target);
 
   if (content) {
-    return magnoliaTransform(content, path);
+    return getMagnoliaContent(content, path);
   }
 };
 
@@ -20,15 +20,7 @@ app.get("/.rest/delivery/pages/:path(*)/@nodes", (req, res) => {
   console.info({ request: req.originalUrl, path: req.params.path });
 
   if (page) {
-    const children = [];
-
-    page["@nodes"].forEach((node) => {
-      if (page[node]["@nodeType"] === "mgnl:page") {
-        children.push(page[node]);
-      }
-    });
-
-    res.json(children);
+    res.json(getMagnoliaChildren(page));
   } else {
     res.status(404).send("Page not found.");
   }

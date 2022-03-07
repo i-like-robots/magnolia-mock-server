@@ -13,7 +13,7 @@ function isArea(node) {
 }
 
 function isContent(node, name) {
-  return node.hasOwnProperty(`${name}0`);
+  return isNode(node) && node.hasOwnProperty(`${name}0`);
 }
 
 function getPageNodes(node) {
@@ -74,8 +74,21 @@ function transformNodes(node, path) {
   return data;
 }
 
-function magnoliaTransform(content, path) {
-  return transformNodes(content, urlJoin(path));
+function getMagnoliaContent(content, path) {
+  const basePath = urlJoin(path);
+  return transformNodes(content, basePath);
 }
 
-module.exports = { magnoliaTransform };
+function getMagnoliaChildren(page) {
+  const children = [];
+
+  page["@nodes"].forEach((node) => {
+    if (page[node]["@nodeType"] === "mgnl:page") {
+      children.push(page[node]);
+    }
+  });
+
+  return children;
+}
+
+module.exports = { getMagnoliaContent, getMagnoliaChildren };

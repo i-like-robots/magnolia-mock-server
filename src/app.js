@@ -39,9 +39,10 @@ app.get("/.rest/delivery/pages/:path(*)", (req, res) => {
   }
 });
 
-async function bootstrap() {
+async function bootstrap(options) {
   try {
-    app.locals.content = await getContent({ source: "./content" });
+    app.locals.options = options;
+    app.locals.content = await getContent({ source: options.sourceDir });
     return app;
   } catch (err) {
     throw new Error(`Failed to load content: ${err.message}`);

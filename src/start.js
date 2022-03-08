@@ -2,7 +2,12 @@ const { bootstrap } = require("./app");
 
 const PORT = process.env.PORT ?? 5000;
 
-bootstrap()
+const defaultOptions = {
+  sourceDir: "./content",
+};
+
+// TODO: options
+bootstrap({ ...defaultOptions })
   .then((app) => {
     app.listen(PORT, (err) => {
       if (err) throw err;

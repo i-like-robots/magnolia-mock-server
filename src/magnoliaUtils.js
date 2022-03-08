@@ -13,7 +13,7 @@ function transformNode(node, path) {
     "@name": name,
     "@path": path,
     "@id": node["jcr:uuid"],
-    "@nodeType": node["jcr:primaryType"],
+    "@nodeType": node["jcr:primaryType"] || "mgnl:contentNode",
     "@nodes": getChildNodeNames(node),
   };
 

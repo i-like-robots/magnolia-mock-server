@@ -1,21 +1,13 @@
-function getNodeID(node) {
-  return node["jcr:uuid"] || node["@id"] || null;
-}
-
-function getNodeType(node) {
-  return node["jcr:primaryType"] || node["@nodeType"] || null;
-}
-
 function isNode(node) {
-  return node ? typeof getNodeID(node) === "string" : false;
+  return node ? typeof node["jcr:uuid"] === "string" : false;
 }
 
 function isPage(node) {
-  return isNode(node) && getNodeType(node) === "mgnl:page";
+  return isNode(node) && node["jcr:primaryType"] === "mgnl:page";
 }
 
 function isArea(node) {
-  return isNode(node) && getNodeType(node) === "mgnl:area";
+  return isNode(node) && node["jcr:primaryType"] === "mgnl:area";
 }
 
 function isMultiField(node, name) {
@@ -47,6 +39,8 @@ function getChildNodes(node, name) {
     return getAreaNodes(node);
   }
 
+  // TODO: Is multi field parent
+
   if (isMultiField(node, name)) {
     return getMultiFieldNodes(node, name);
   }
@@ -62,7 +56,7 @@ function transformNode(node, path) {
     "@path": path,
     "@id": node["jcr:uuid"],
     "@nodeType": node["jcr:primaryType"],
-    "@nodes": [],
+    "@nodes": getChildNodes(node, name),
   };
 
   const remove = {
@@ -74,24 +68,23 @@ function transformNode(node, path) {
 }
 
 function transformNodes(node, path, options, depth = 1) {
-  const data = transformNode(node, path);
+  const clone = transformNode(node, path);
 
-  Object.keys(data).forEach((key) => {
-    const item = data[key];
+  Object.keys(clone).forEach((key) => {
+    const item = clone[key];
 
     if (isNode(item)) {
       if (depth < options.depth) {
         const basePath = `${path}/${key}`;
-        data[key] = transformNodes(item, basePath, options, depth + 1);
+        clone[key] = transformNodes(item, basePath, options, depth + 1);
       } else {
-        data[key] = undefined;
+        clone[key] = undefined;
+        clone["@nodes"] = clone["@nodes"].filter((node) => node !== key);
       }
     }
   });
 
-  data["@nodes"].push(...getChildNodes(data, path));
-
-  return data;
+  return clone;
 }
 
 module.exports = { transformNode, transformNodes };

@@ -2,50 +2,8 @@ function isNode(node) {
   return node ? typeof node["jcr:uuid"] === "string" : false;
 }
 
-function isPage(node) {
-  return isNode(node) && node["jcr:primaryType"] === "mgnl:page";
-}
-
-function isArea(node) {
-  return isNode(node) && node["jcr:primaryType"] === "mgnl:area";
-}
-
-function isMultiField(node, name) {
-  return isNode(node) && node.hasOwnProperty(`${name}0`);
-}
-
-function getPageNodes(node) {
-  return Object.keys(node).filter((key) => {
-    return isPage(node[key]) || isArea(node[key]);
-  });
-}
-
-function getAreaNodes(node) {
-  const regexp = /^\d+$/;
-  return Object.keys(node).filter((key) => regexp.test(key));
-}
-
-function getMultiFieldNodes(node, name) {
-  const regexp = new RegExp(`^${name}\\d+$`);
-  return Object.keys(node).filter((key) => regexp.test(key));
-}
-
-function getChildNodes(node, name) {
-  if (isPage(node)) {
-    return getPageNodes(node);
-  }
-
-  if (isArea(node)) {
-    return getAreaNodes(node);
-  }
-
-  // TODO: Is multi field parent
-
-  if (isMultiField(node, name)) {
-    return getMultiFieldNodes(node, name);
-  }
-
-  return [];
+function getChildNodes(node) {
+  return Object.keys(node).filter((key) => isNode(node[key]));
 }
 
 function transformNode(node, path) {
@@ -56,7 +14,7 @@ function transformNode(node, path) {
     "@path": path,
     "@id": node["jcr:uuid"],
     "@nodeType": node["jcr:primaryType"],
-    "@nodes": getChildNodes(node, name),
+    "@nodes": getChildNodes(node),
   };
 
   const remove = {
@@ -79,10 +37,11 @@ function transformNodes(node, path, options, depth = 1) {
         clone[key] = transformNodes(item, basePath, options, depth + 1);
       } else {
         clone[key] = undefined;
-        clone["@nodes"] = clone["@nodes"].filter((node) => node !== key);
       }
     }
   });
+
+  // Could move @nodes here to calculate after filtering
 
   return clone;
 }

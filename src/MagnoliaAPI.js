@@ -21,13 +21,13 @@ class MagnoliaAPI {
     const content = this.getContent(path);
 
     if (content) {
-      const children = [];
+      const nodes = [];
 
       page["@nodes"].forEach((node) => {
-        children.push(page[node]);
+        nodes.push(page[node]);
       });
 
-      return children;
+      return nodes;
     }
   }
 }

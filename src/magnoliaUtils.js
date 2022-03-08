@@ -40,6 +40,16 @@ function getMultiFieldNodes(node, name) {
   return Object.keys(node).filter((key) => regexp.test(key));
 }
 
+function getChildNodes(node, name) {
+  if (isPage(node)) {
+    return getPageNodes(node);
+  } else if (isArea(node)) {
+    return getAreaNodes(node);
+  } else if (isMultiField(node, name)) {
+    return getMultiFieldNodes(node, name);
+  }
+}
+
 function transformNode(node, path) {
   const name = path.split("/").pop();
 
@@ -56,35 +66,33 @@ function transformNode(node, path) {
     "jcr:uuid": undefined,
   };
 
-  if (isPage(node)) {
-    append["@nodes"].push(...getPageNodes(node));
-  } else if (isArea(node)) {
-    append["@nodes"].push(...getAreaNodes(node));
-  } else if (isMultiField(node, name)) {
-    append["@nodes"].push(...getMultiFieldNodes(node, name));
-  }
-
-  return { ...append, ...node, ...remove };
+  return { ...node, ...append, ...remove };
 }
 
-function transformNodes(node, path) {
+function transformNodes(node, path, options, depth = 1) {
   const data = transformNode(node, path);
 
   Object.keys(data).forEach((key) => {
     const item = data[key];
 
     if (isNode(item)) {
-      const basePath = urlJoin(path, key);
-      data[key] = transformNodes(item, basePath);
+      if (depth < options.depth) {
+        const basePath = urlJoin(path, key);
+        data[key] = transformNodes(item, basePath, options, depth + 1);
+      } else {
+        data[key] = undefined;
+      }
     }
   });
+
+  data["@nodes"].push(...getChildNodes(data, path));
 
   return data;
 }
 
-function getMagnoliaContent(content, path) {
+function getMagnoliaContent(content, path, options) {
   const basePath = urlJoin(path);
-  return transformNodes(content, basePath);
+  return transformNodes(content, basePath, options);
 }
 
 function getMagnoliaChildren(page) {

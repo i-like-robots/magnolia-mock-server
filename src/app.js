@@ -6,19 +6,21 @@ const { getMagnoliaContent, getMagnoliaChildren } = require("./magnoliaUtils");
 
 const app = express();
 
-const getPage = (path) => {
+const defaultOptions = { depth: 10 };
+
+const getPage = (path, options) => {
   const target = path.split("/").filter(Boolean);
   const content = get(app.locals.content, target);
 
   if (content) {
-    return getMagnoliaContent(content, path);
+    return getMagnoliaContent(content, path, { ...defaultOptions, ...options });
   }
 };
 
 app.use(validationMiddleware);
 
 app.get("/.rest/delivery/pages/:path(*)/@nodes", (req, res) => {
-  const page = getPage(req.params.path);
+  const page = getPage(req.params.path, req.query);
 
   console.info({ request: req.originalUrl, path: req.params.path });
 
@@ -30,7 +32,7 @@ app.get("/.rest/delivery/pages/:path(*)/@nodes", (req, res) => {
 });
 
 app.get("/.rest/delivery/pages/:path(*)", (req, res) => {
-  const page = getPage(req.params.path);
+  const page = getPage(req.params.path, req.query);
 
   console.info({ request: req.originalUrl, path: req.params.path });
 

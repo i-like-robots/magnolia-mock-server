@@ -1,5 +1,4 @@
 const get = require("just-safe-get");
-const urlJoin = require("proper-url-join");
 
 function getNodeID(node) {
   return node["jcr:uuid"] || node["@id"] || null;
@@ -80,7 +79,7 @@ function transformNodes(node, path, options, depth = 1) {
 
     if (isNode(item)) {
       if (depth < options.depth) {
-        const basePath = urlJoin(path, key);
+        const basePath = `${path}/${key}`;
         data[key] = transformNodes(item, basePath, options, depth + 1);
       } else {
         data[key] = undefined;
@@ -98,7 +97,7 @@ function getMagnoliaContent(content, path, options) {
   const node = get(content, target);
 
   if (node) {
-    const normalizedPath = urlJoin(path);
+    const normalizedPath = `/${target.join("/")}`;
     return transformNodes(node, normalizedPath, options);
   }
 }

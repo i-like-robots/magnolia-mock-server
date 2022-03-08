@@ -4,6 +4,10 @@ const MagnoliaAPI = require("./MagnoliaAPI");
 
 const app = express();
 
+app.get("/.rest/delivery/pages", (req, res) => {
+  res.status(501).json({ results: [] });
+});
+
 app.get("/.rest/delivery/pages/:path(*)/@nodes", (req, res) => {
   const content = app.locals.magnolia.getChildNodes(req.params.path);
 

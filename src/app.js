@@ -16,7 +16,8 @@ app.get("/.rest/delivery/pages/:path(*)/@nodes", (req, res) => {
   if (content) {
     res.json(content);
   } else {
-    res.status(404).send("Page not found.");
+    const error = { code: "pathNotFound", message: req.params.path };
+    res.status(404).json({ error });
   }
 });
 
@@ -28,7 +29,8 @@ app.get("/.rest/delivery/pages/:path(*)", (req, res) => {
   if (content) {
     res.json(content);
   } else {
-    res.status(404).send("Page not found.");
+    const error = { code: "pathNotFound", message: req.params.path };
+    res.status(404).json({ error });
   }
 });
 

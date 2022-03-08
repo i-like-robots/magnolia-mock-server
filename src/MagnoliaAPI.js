@@ -7,7 +7,7 @@ class MagnoliaAPI {
     this.options = options;
   }
 
-  getContent(path) {
+  getNode(path) {
     const target = path.split("/").filter(Boolean);
     const node = get(this.content, target);
 
@@ -17,14 +17,14 @@ class MagnoliaAPI {
     }
   }
 
-  getContentNodes(path) {
-    const content = this.getContent(path);
+  getChildNodes(path) {
+    const node = this.getNode(path);
 
-    if (content) {
+    if (node) {
       const nodes = [];
 
-      page["@nodes"].forEach((node) => {
-        nodes.push(page[node]);
+      node["@nodes"].forEach((key) => {
+        nodes.push(node[key]);
       });
 
       return nodes;

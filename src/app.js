@@ -5,7 +5,7 @@ const MagnoliaAPI = require("./MagnoliaAPI");
 const app = express();
 
 app.get("/.rest/delivery/pages/:path(*)/@nodes", (req, res) => {
-  const content = app.locals.magnolia.getContentNodes(req.params.path);
+  const content = app.locals.magnolia.getChildNodes(req.params.path);
 
   console.info({ request: req.originalUrl, path: req.params.path });
 
@@ -17,7 +17,7 @@ app.get("/.rest/delivery/pages/:path(*)/@nodes", (req, res) => {
 });
 
 app.get("/.rest/delivery/pages/:path(*)", (req, res) => {
-  const content = app.locals.magnolia.getContent(req.params.path);
+  const content = app.locals.magnolia.getNode(req.params.path);
 
   console.info({ request: req.originalUrl, path: req.params.path });
 

@@ -2,7 +2,7 @@ function isNode(node) {
   return node ? typeof node["jcr:uuid"] === "string" : false;
 }
 
-function getChildNodes(node) {
+function getChildNodeNames(node) {
   return Object.keys(node).filter((key) => isNode(node[key]));
 }
 
@@ -14,7 +14,7 @@ function transformNode(node, path) {
     "@path": path,
     "@id": node["jcr:uuid"],
     "@nodeType": node["jcr:primaryType"],
-    "@nodes": getChildNodes(node),
+    "@nodes": getChildNodeNames(node),
   };
 
   const remove = {

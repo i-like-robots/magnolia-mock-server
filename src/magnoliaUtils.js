@@ -1,5 +1,3 @@
-const get = require("just-safe-get");
-
 function getNodeID(node) {
   return node["jcr:uuid"] || node["@id"] || null;
 }
@@ -43,9 +41,13 @@ function getMultiFieldNodes(node, name) {
 function getChildNodes(node, name) {
   if (isPage(node)) {
     return getPageNodes(node);
-  } else if (isArea(node)) {
+  }
+
+  if (isArea(node)) {
     return getAreaNodes(node);
-  } else if (isMultiField(node, name)) {
+  }
+
+  if (isMultiField(node, name)) {
     return getMultiFieldNodes(node, name);
   }
 
@@ -92,26 +94,4 @@ function transformNodes(node, path, options, depth = 1) {
   return data;
 }
 
-function getMagnoliaContent(content, path, options) {
-  const target = path.split("/").filter(Boolean);
-  const node = get(content, target);
-
-  if (node) {
-    const normalizedPath = `/${target.join("/")}`;
-    return transformNodes(node, normalizedPath, options);
-  }
-}
-
-function getMagnoliaNodes(page) {
-  const children = [];
-
-  page["@nodes"].forEach((node) => {
-    if (isPage(page[node])) {
-      children.push(page[node]);
-    }
-  });
-
-  return children;
-}
-
-module.exports = { getMagnoliaContent, getMagnoliaNodes };
+module.exports = { transformNode, transformNodes };

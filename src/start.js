@@ -4,6 +4,7 @@ const PORT = process.env.PORT ?? 5000;
 
 const defaultOptions = {
   sourceDir: "./content",
+  depth: 10,
 };
 
 // TODO: options

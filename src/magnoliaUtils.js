@@ -1,3 +1,4 @@
+const get = require("just-safe-get");
 const urlJoin = require("proper-url-join");
 
 function getNodeID(node) {
@@ -48,6 +49,8 @@ function getChildNodes(node, name) {
   } else if (isMultiField(node, name)) {
     return getMultiFieldNodes(node, name);
   }
+
+  return [];
 }
 
 function transformNode(node, path) {
@@ -91,11 +94,16 @@ function transformNodes(node, path, options, depth = 1) {
 }
 
 function getMagnoliaContent(content, path, options) {
-  const basePath = urlJoin(path);
-  return transformNodes(content, basePath, options);
+  const target = path.split("/").filter(Boolean);
+  const node = get(content, target);
+
+  if (node) {
+    const normalizedPath = urlJoin(path);
+    return transformNodes(node, normalizedPath, options);
+  }
 }
 
-function getMagnoliaChildren(page) {
+function getMagnoliaNodes(page) {
   const children = [];
 
   page["@nodes"].forEach((node) => {
@@ -107,4 +115,4 @@ function getMagnoliaChildren(page) {
   return children;
 }
 
-module.exports = { getMagnoliaContent, getMagnoliaChildren };
+module.exports = { getMagnoliaContent, getMagnoliaNodes };

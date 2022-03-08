@@ -1,38 +1,34 @@
 const express = require("express");
-const get = require("just-safe-get");
 const { getContent } = require("./contentUtils");
 const { validationMiddleware } = require("./middleware");
-const { getMagnoliaContent, getMagnoliaChildren } = require("./magnoliaUtils");
+const { getMagnoliaContent, getMagnoliaNodes } = require("./magnoliaUtils");
 
 const app = express();
 
-const defaultOptions = { depth: 10 };
-
-const getPage = (path, options) => {
-  const target = path.split("/").filter(Boolean);
-  const content = get(app.locals.content, target);
-
-  if (content) {
-    return getMagnoliaContent(content, path, { ...defaultOptions, ...options });
-  }
-};
+const defaultOptions = Object.freeze({ depth: 10 });
 
 app.use(validationMiddleware);
 
 app.get("/.rest/delivery/pages/:path(*)/@nodes", (req, res) => {
-  const page = getPage(req.params.path, req.query);
+  const page = getMagnoliaContent(app.locals.content, req.params.path, {
+    ...defaultOptions,
+    ...req.query,
+  });
 
   console.info({ request: req.originalUrl, path: req.params.path });
 
   if (page) {
-    res.json(getMagnoliaChildren(page));
+    res.json(getMagnoliaNodes(page));
   } else {
     res.status(404).send("Page not found.");
   }
 });
 
 app.get("/.rest/delivery/pages/:path(*)", (req, res) => {
-  const page = getPage(req.params.path, req.query);
+  const page = getMagnoliaContent(app.locals.content, req.params.path, {
+    ...defaultOptions,
+    ...req.query,
+  });
 
   console.info({ request: req.originalUrl, path: req.params.path });
 

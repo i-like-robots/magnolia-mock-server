@@ -1,6 +1,7 @@
 const express = require("express");
 const get = require("just-safe-get");
 const { getContent } = require("./contentUtils");
+const { validationMiddleware } = require("./middleware");
 const { getMagnoliaContent, getMagnoliaChildren } = require("./magnoliaUtils");
 
 const app = express();
@@ -13,6 +14,8 @@ const getPage = (path) => {
     return getMagnoliaContent(content, path);
   }
 };
+
+app.use(validationMiddleware);
 
 app.get("/.rest/delivery/pages/:path(*)/@nodes", (req, res) => {
   const page = getPage(req.params.path);

@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.3",
+    "express-validator": "^6.14.0",
     "glob": "^7.2.0",
     "just-safe-get": "^4.0.1",
     "proper-url-join": "^2.1.1",

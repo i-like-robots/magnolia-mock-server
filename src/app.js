@@ -1,11 +1,8 @@
 const express = require("express");
 const { getContent } = require("./contentUtils");
-const { validationMiddleware } = require("./middleware");
 const MagnoliaAPI = require("./MagnoliaAPI");
 
 const app = express();
-
-app.use(validationMiddleware);
 
 app.get("/.rest/delivery/pages/:path(*)/@nodes", (req, res) => {
   const content = app.locals.magnolia.getContentNodes(req.params.path);

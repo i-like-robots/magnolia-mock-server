@@ -1,5 +1,6 @@
 function isNode(node) {
-  return node ? typeof node["jcr:uuid"] === "string" : false;
+  const id = node ? node["jcr:uuid"] || node["@id"] : null;
+  return typeof id === "string";
 }
 
 function getChildNodeNames(node) {
@@ -14,7 +15,7 @@ function transformNode(node, path) {
     "@path": path,
     "@id": node["jcr:uuid"],
     "@nodeType": node["jcr:primaryType"] || "mgnl:contentNode",
-    "@nodes": getChildNodeNames(node),
+    "@nodes": [],
   };
 
   const remove = {
@@ -25,7 +26,7 @@ function transformNode(node, path) {
   return { ...node, ...append, ...remove };
 }
 
-function transformNodes(node, path, options, depth = 1) {
+function transformNodes(node, path, options, depth = 0) {
   const clone = transformNode(node, path);
 
   Object.keys(clone).forEach((key) => {
@@ -41,7 +42,7 @@ function transformNodes(node, path, options, depth = 1) {
     }
   });
 
-  // Could move @nodes here to calculate after filtering
+  clone["@nodes"] = getChildNodeNames(clone);
 
   return clone;
 }

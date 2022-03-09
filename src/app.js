@@ -1,5 +1,5 @@
 const express = require("express");
-const { getContent } = require("./contentUtils");
+const { loadContent } = require("./contentUtils");
 const MagnoliaAPI = require("./MagnoliaAPI");
 
 const app = express();
@@ -9,7 +9,7 @@ app.get("/.rest/delivery/pages", (req, res) => {
 });
 
 app.get("/.rest/delivery/pages/:path(*)/@nodes", (req, res) => {
-  const content = app.locals.magnolia.getChildNodes(req.params.path);
+  const content = app.locals.magnolia.getMagnoliaChildNodes(req.params.path);
 
   console.info({ request: req.originalUrl, path: req.params.path });
 
@@ -22,7 +22,7 @@ app.get("/.rest/delivery/pages/:path(*)/@nodes", (req, res) => {
 });
 
 app.get("/.rest/delivery/pages/:path(*)", (req, res) => {
-  const content = app.locals.magnolia.getNode(req.params.path);
+  const content = app.locals.magnolia.getMagnoliaNode(req.params.path);
 
   console.info({ request: req.originalUrl, path: req.params.path });
 
@@ -36,7 +36,7 @@ app.get("/.rest/delivery/pages/:path(*)", (req, res) => {
 
 async function bootstrap(options) {
   try {
-    const content = await getContent({ source: options.sourceDir });
+    const content = await loadContent({ source: options.sourceDir });
     const magnolia = new MagnoliaAPI(content, options);
 
     Object.assign(app.locals, { content, magnolia });

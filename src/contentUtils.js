@@ -7,7 +7,7 @@ function findContent(source) {
   return getFiles(globPattern);
 }
 
-async function getContent(options) {
+async function loadContent(options) {
   const files = await findContent(options.source);
 
   const content = {};
@@ -20,4 +20,4 @@ async function getContent(options) {
   return content;
 }
 
-module.exports = { findContent, getContent };
+module.exports = { findContent, loadContent };

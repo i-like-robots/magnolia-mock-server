@@ -6,16 +6,20 @@ function isMagnoliaNode(node) {
   return node ? typeof node["@id"] === "string" : false;
 }
 
-function getChildNodeKeys(node) {
-  return Object.keys(node).filter((key) => isMagnoliaNode(node[key]));
-}
-
-function isValidNodeType(node, types = []) {
+function isValidJCRNodeType(node, types = []) {
   const type = node["jcr:primaryType"] || "mgnl:contentNode";
   return type && types.includes(type);
 }
 
-function transformNodes(node, path, options, depth = 0) {
+function getJCRNodeChildKeys(node) {
+  return Object.keys(node).filter((key) => isJCRNode(node[key]));
+}
+
+function getMagnoliaNodeChildKeys(node) {
+  return Object.keys(node).filter((key) => isMagnoliaNode(node[key]));
+}
+
+function transformJCRNode(node, path, options, depth = 0) {
   const clone = {
     "@name": path.split("/").pop(),
     "@path": path,
@@ -31,17 +35,18 @@ function transformNodes(node, path, options, depth = 0) {
     if (isJCRNode(prop)) {
       const maxDepth = depth >= options.depth;
 
-      if (!maxDepth && isValidNodeType(prop, options.childNodeTypes)) {
-        clone[key] = transformNodes(prop, `${path}/${key}`, options, depth + 1);
+      if (!maxDepth && isValidJCRNodeType(prop, options.childNodeTypes)) {
+        const newPath = `${path}/${key}`;
+        clone[key] = transformJCRNode(prop, newPath, options, depth + 1);
       }
     } else {
       clone[key] = prop;
     }
   });
 
-  clone["@nodes"] = getChildNodeKeys(clone);
+  clone["@nodes"] = getMagnoliaNodeChildKeys(clone);
 
   return clone;
 }
 
-module.exports = { transformNodes };
+module.exports = { isValidJCRNodeType, transformJCRNode, getJCRNodeChildKeys };

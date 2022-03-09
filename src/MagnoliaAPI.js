@@ -1,5 +1,9 @@
 const get = require("just-safe-get");
-const { transformNodes } = require("./magnoliaUtils");
+const {
+  getJCRNodeChildKeys,
+  isValidJCRNodeType,
+  transformJCRNode,
+} = require("./magnoliaUtils");
 
 class MagnoliaAPI {
   constructor(content, options) {
@@ -7,28 +11,37 @@ class MagnoliaAPI {
     this.options = options;
   }
 
-  getNode(path) {
+  getJCRNode(path) {
     const target = path.split("/").filter(Boolean);
-    const node = get(this.content, target);
-
-    if (node) {
-      const normalizedPath = `/${target.join("/")}`;
-      return transformNodes(node, normalizedPath, this.options);
-    }
+    return get(this.content, target);
   }
 
-  getChildNodes(path) {
-    const node = this.getNode(path);
+  getJCRChildNodes(path) {
+    const node = this.getJCRNode(path);
+    const keys = node ? getJCRNodeChildKeys(node) : [];
 
-    if (node) {
-      const nodes = [];
+    return keys.map((key) => node[key]);
+  }
 
-      node["@nodes"].forEach((key) => {
-        nodes.push(node[key]);
-      });
+  getMagnoliaNode(path) {
+    const node = this.getJCRNode(path);
+    return node ? transformJCRNode(node, `/${path}`, this.options) : null;
+  }
 
-      return nodes;
-    }
+  getMagnoliaChildNodes(path) {
+    const node = this.getJCRNode(path);
+
+    const keys = node ? getJCRNodeChildKeys(node) : [];
+
+    return keys.reduce((results, key) => {
+      const child = node[key];
+
+      if (isValidJCRNodeType(child, this.options.nodeTypes)) {
+        results.push(transformJCRNode(child, `/${path}/${key}`, this.options));
+      }
+
+      return results;
+    }, []);
   }
 }
 

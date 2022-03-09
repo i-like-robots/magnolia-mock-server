@@ -10,46 +10,32 @@ function getChildNodeKeys(node) {
   return Object.keys(node).filter((key) => isMagnoliaNode(node[key]));
 }
 
-function filterNodeType(node, types = []) {
+function isValidNodeType(node, types = []) {
   const type = node["jcr:primaryType"] || "mgnl:contentNode";
   return type && types.includes(type);
 }
 
-function transformNode(node, path) {
-  const name = path.split("/").pop();
-
-  const append = {
-    "@name": name,
+function transformNodes(node, path, options, depth = 0) {
+  const clone = {
+    "@name": path.split("/").pop(),
     "@path": path,
     "@id": node["jcr:uuid"],
     "@nodeType": node["jcr:primaryType"] || "mgnl:contentNode",
-    "@nodes": [],
   };
 
-  const remove = {
-    "jcr:primaryType": undefined,
-    "jcr:uuid": undefined,
-  };
+  Object.keys(node).forEach((key) => {
+    const prop = node[key];
 
-  return { ...node, ...append, ...remove };
-}
-
-function transformNodes(node, path, options, depth = 0) {
-  const clone = transformNode(node, path);
-
-  Object.keys(clone).forEach((key) => {
-    const prop = clone[key];
+    if (key.startsWith("jcr:")) return;
 
     if (isJCRNode(prop)) {
-      if (
-        depth < options.depth &&
-        filterNodeType(prop, options.childNodeTypes)
-      ) {
-        const basePath = `${path}/${key}`;
-        clone[key] = transformNodes(prop, basePath, options, depth + 1);
-      } else {
-        clone[key] = undefined;
+      const maxDepth = depth >= options.depth;
+
+      if (!maxDepth && isValidNodeType(prop, options.childNodeTypes)) {
+        clone[key] = transformNodes(prop, `${path}/${key}`, options, depth + 1);
       }
+    } else {
+      clone[key] = prop;
     }
   });
 
@@ -58,4 +44,4 @@ function transformNodes(node, path, options, depth = 0) {
   return clone;
 }
 
-module.exports = { transformNode, transformNodes };
+module.exports = { transformNodes };

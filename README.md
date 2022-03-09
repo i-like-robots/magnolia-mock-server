@@ -1,6 +1,6 @@
 # Magnolia Mock Server
 
-This app allows you to quickly provide a copy of your CMS content via a Magnolia-like API.
+This app allows you to quickly provide a copy of your CMS website content via a Magnolia-like API.
 
 ---
 
@@ -12,9 +12,9 @@ This app allows you to quickly provide a copy of your CMS content via a Magnolia
 
 ## About
 
-Running Magnolia can be painful for front-end developers. It requires setting up infrastructure and tools we are not always familiar with so when they go wrong - which they do - that can leave people stuck and frustrated. And things are not always easy once they do have the CMS up and running because Magnolia consumes a very large amount of resources which are vastly disproportionate to the requirements that front-end developers have; fetching a few hundred kilobytes of data.
+Running Magnolia can be painful for front-end developers. It requires setting up infrastructure and tools we are not always familiar with so when they go wrong - which they do - that can leave people stuck and frustrated. And things are not always easy even when the CMS is up and running because Magnolia consumes a very large amount of resources which are vastly disproportionate to the requirements that front-end developers have; fetching a few hundred kilobytes of data.
 
-For this reason many devs will configure their apps to fetch data from a remote instance of Magnolia but this can also lead to problems because - as a CMS - the content is always changing!
+For this reason many devs will configure their apps to fetch data from a remote instance of Magnolia instead of a local one but this can also lead to problems because - as a CMS - the content is always changing!
 
 This small Express application allows you to quickly serve a static copy of your JCR website content via a Magnolia-like API so you don't need to run Magnolia or depend upon a moving target.
 
@@ -45,10 +45,10 @@ Please note that this project has only been tested in Mac and Linux environments
    npm install
    ```
 
-3. Copy your website data files (usually named `website.{workspace-name}.yaml`) into the `content/` folder:
+3. Copy your website data files (usually named `website.{namespace}.yaml`) into the `content/` folder:
 
    ```bash
-   cp ../magnolia-cms/website.my-workspace-name.yaml content/
+   cp ../magnolia-cms/website.example-site.yaml content/
    ```
 
 4. You can now start and visit the running application:
@@ -63,8 +63,12 @@ Please note that this project has only been tested in Mac and Linux environments
 
 ### Why can't I access the query endpoint?
 
-This is not currently implemented, you can only fetch nodes children of nodes.
+This is not currently implemented, you can only fetch nodes and children of nodes.
 
 ### Does this app support JCR data saved as XML?
 
 No, the app only supports JCR data saved in YAML format.
+
+### Can I configure the node depth and node types to return?
+
+Yes, like the Magnolia delivery endpoint configuration you can filter my node type and tree depth.

@@ -1,6 +1,4 @@
 const express = require("express");
-const { loadContent } = require("./contentUtils");
-const MagnoliaAPI = require("./MagnoliaAPI");
 
 const app = express();
 
@@ -34,17 +32,4 @@ app.get("/.rest/delivery/pages/:path(*)", (req, res) => {
   }
 });
 
-async function bootstrap(options) {
-  try {
-    const content = await loadContent({ source: options.sourceDir });
-    const magnolia = new MagnoliaAPI(content, options);
-
-    Object.assign(app.locals, { content, magnolia });
-
-    return app;
-  } catch (err) {
-    throw new Error(`Failed to load content: ${err.message}`);
-  }
-}
-
-module.exports = { app, bootstrap };
+module.exports = app;

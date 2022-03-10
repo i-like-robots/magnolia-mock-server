@@ -1,6 +1,5 @@
 {
   "name": "magnolia-mock-server",
-  "private": true,
   "version": "1.0.0",
   "description": "",
   "main": "src/bootstrap.js",

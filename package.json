@@ -1,7 +1,7 @@
 {
   "name": "magnolia-mock-server",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "",
   "main": "src/bootstrap.js",
   "bin": "src/bin/cli",

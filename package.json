@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "description": "",
-  "main": "src/start.js",
+  "main": "src/bootstrap.js",
   "bin": "src/bin/cli",
   "scripts": {
     "start": "node src/start.js",

@@ -1,30 +1,45 @@
 #!/usr/bin/env node
 
-const program = require("commander");
+const commander = require("commander");
 const path = require("path");
 const bootstrap = require("../bootstrap");
 
-program
+function parseNumber(value) {
+  const number = parseInt(value, 10);
+
+  if (isNaN(number)) {
+    throw new commander.InvalidArgumentError("Not a number.");
+  }
+
+  return number;
+}
+
+commander
   .option(
-    "-P, --port <number>",
+    "-p, --port <number>",
     "Port number to run the mock server on",
-    (arg) => (/^\d+$/.test(arg) ? parseInt(arg, 10) : 5000),
+    parseNumber,
     5000
   )
   .option(
-    "-D, --depth <number>",
+    "-d, --depth <number>",
     "How deep the node tree will be traversed",
-    (arg) => (/^\d+$/.test(arg) ? parseInt(arg, 10) : 1),
+    parseNumber,
     0
   )
-  .argument("[dir]", "Path to a directory containing your website YAML files")
+  .argument("[dir]", "Path to the directory containing your YAML files")
   .action((dir, options) => {
-    const sourceDir = path.resolve(dir);
-    bootstrap({ ...options, sourceDir });
+    if (dir) {
+      try {
+        const sourceDir = path.resolve(dir);
+        bootstrap({ ...options, sourceDir });
+      } catch (err) {
+        console.error(err);
+        process.exit(1);
+      }
+    } else {
+      program.help();
+    }
   });
 
-const argv = program.parse(process.argv);
-
-if (argv.args.length === 0) {
-  program.help();
-}
+commander.parse(process.argv);

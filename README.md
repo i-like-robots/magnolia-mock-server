@@ -1,11 +1,17 @@
 # Magnolia Mock Server
 
-This app allows you to quickly provide a copy of your CMS website content via a Magnolia-like API.
+This CLI tool allows you to quickly provide a copy of your CMS website content via a Magnolia-like API.
+
+```bash
+npx magnolia-mock-server ./content
+# Server running at http://localhost:5000
+```
 
 ---
 
 - [About](#about)
-- [Getting started](#getting-started)
+- [Installation](#installation)
+- [Usage](#usage)
 - [Troubleshooting](#troubleshooting)
 
 ---
@@ -16,19 +22,53 @@ Running Magnolia can be painful for front-end developers. It requires setting up
 
 For this reason many devs will configure their apps to fetch data from a remote instance of Magnolia instead of a local one but this can also lead to problems because - as a CMS - the content is always changing!
 
-This small Express application allows you to quickly serve a static copy of your JCR website content via a Magnolia-like API so you don't need to run Magnolia or depend upon a moving target.
+This small tool allows you to quickly serve a static copy of your JCR website content via a Magnolia-like API so you don't need to run Magnolia or depend upon a moving target.
 
-## Getting started
+## Installation
 
-### Requirements
+This is a [Node.js] module available through the [npm] registry. Node 14 or above is required.
 
-To get started on working with the app, you'll need to make sure you have the following software tools installed.
+Installation is done using the [npm install] command:
 
-- Git
-- Node.js (version 14 or higher is required)
-- npm
+```sh
+$ npm install -D magnolia-mock-server
+```
 
-Please note that this project has only been tested in Mac and Linux environments. If you are on a Mac you may find it easiest to install the [Command Line Tools](https://developer.apple.com/download/more/) package which includes Git.
+[node.js]: https://nodejs.org/
+[npm]: http://npmjs.com/
+[npm install]: https://docs.npmjs.com/getting-started/installing-npm-packages-locally
+
+## Usage
+
+### Command line
+
+You can use the tool to serve a directory of YAML files containing your content using `npx` (which is installed with npm):
+
+```bash
+npx magnolia-mock-server --port 5000 --depth 0 ./content
+```
+
+Once running you can access the API via one of its [endpoints](#endpoints).
+
+### Node.js
+
+You can also use the tool programmatically by importing it into your JavaScript code:
+
+```js
+const bootstrap = require("magnolia-mock-server");
+
+try {
+  await bootstrap(options);
+} catch (err) {
+  console.error(err);
+}
+```
+
+### Endpoints
+
+- Query nodes: http://localhost:5000/.rest/delivery/pages/ (not implemented)
+- Read node: http://localhost:5000/.rest/delivery/pages/{path}
+- Get children: http://localhost:5000/.rest/delivery/pages/{path}/@nodes
 
 ### Project setup
 

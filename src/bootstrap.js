@@ -17,21 +17,15 @@ const defaultOptions = {
 
 async function bootstrap(userOptions) {
   const options = { ...defaultOptions, ...userOptions };
+  const content = await loadContent({ source: options.sourceDir });
+  const magnolia = new MagnoliaAPI(content, options);
 
-  try {
-    const content = await loadContent({ source: options.sourceDir });
-    const magnolia = new MagnoliaAPI(content, options);
+  Object.assign(app.locals, { content, magnolia });
 
-    Object.assign(app.locals, { content, magnolia });
-
-    app.listen(options.port, (err) => {
-      if (err) throw err;
-      console.log(`Server running at http://localhost:${options.port}`);
-    });
-  } catch (err) {
-    console.error(err);
-    process.exit(1);
-  }
+  app.listen(options.port, (err) => {
+    if (err) throw err;
+    console.log(`Server running at http://localhost:${options.port}`);
+  });
 }
 
 module.exports = bootstrap;

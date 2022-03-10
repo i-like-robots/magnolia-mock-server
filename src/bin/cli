@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+
+const program = require("commander");
+const path = require("path");
+const bootstrap = require("../bootstrap");
+
+program
+  .option(
+    "-P, --port <number>",
+    "Port number to run the mock server on",
+    (arg) => (/^\d+$/.test(arg) ? parseInt(arg, 10) : 5000),
+    5000
+  )
+  .option(
+    "-D, --depth <number>",
+    "How deep the node tree will be traversed",
+    (arg) => (/^\d+$/.test(arg) ? parseInt(arg, 10) : 1),
+    0
+  )
+  .argument("[dir]", "Path to a directory containing your website YAML files")
+  .action((dir, options) => {
+    const sourceDir = path.resolve(dir);
+    bootstrap({ ...options, sourceDir });
+  });
+
+const argv = program.parse(process.argv);
+
+if (argv.args.length === 0) {
+  program.help();
+}

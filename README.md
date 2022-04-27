@@ -1,6 +1,6 @@
 # Magnolia Mock Server
 
-This CLI tool allows you to quickly provide a copy of your CMS website content via a Magnolia-like API.
+This CLI tool allows you to quickly provide a copy of your CMS content via a Magnolia-like API.
 
 ```bash
 npx magnolia-mock-server ./content
@@ -18,11 +18,11 @@ npx magnolia-mock-server ./content
 
 ## About
 
-Running Magnolia can be painful for front-end developers. It requires setting up infrastructure and tools we are not always familiar with so when they go wrong - which they do - that can leave people stuck and frustrated. And things are not always easy even when the CMS is up and running because Magnolia consumes a very large amount of resources which are vastly disproportionate to the requirements that front-end developers have; fetching a few hundred kilobytes of data.
+Running Magnolia can be painful for front-end developers. It requires setting up infrastructure and tools we are not always familiar with so when they go wrong - which they do, a lot - that can leave people stuck and frustrated. And things are not always easy even when the CMS is up and running because Magnolia consumes a very large amount of resources which are vastly disproportionate to the requirements that front-end developers have; fetching a small amounts of data!
 
 For this reason many devs will configure their apps to fetch data from a remote instance of Magnolia instead of a local one but this can also lead to problems because - as a CMS - the content is always changing!
 
-This small tool allows you to quickly serve a static copy of your JCR website content via a Magnolia-like API so you don't need to run Magnolia or depend upon a moving target.
+This small tool allows you to quickly serve a static copy of your JCR website content via a Magnolia-like API so you no longer need to run Magnolia or depend on a moving target.
 
 ## Installation
 
@@ -42,13 +42,13 @@ $ npm install -D magnolia-mock-server
 
 ### Command line
 
-You can use the tool to serve a directory of YAML files containing your content using `npx` (which is installed with npm):
+You can use the tool to serve a directory of YAML files containing your content using `npx` (which is a tool installed by default with npm):
 
 ```bash
 npx magnolia-mock-server --port 5000 ./content
 ```
 
-Once running you can access the API via one of its [endpoints](#endpoints).
+Once [configured](#options) and running you can access the API via one of its [endpoints](#endpoints).
 
 ### Node.js
 
@@ -66,7 +66,7 @@ try {
 
 ### Options
 
-When using this tool via the CLI or in your Node.js modules it can be configured with a number of options. Most of the avilable options are analogous to Magnolia's [delivery API configuration](https://docs.magnolia-cms.com/product-docs/6.2/Developing/API/Delivery-API.html#_properties).
+When using this tool via the CLI or in your Node.js modules it can be configured with a number of options. Most of the available options are analogous to Magnolia's [delivery API configuration](https://docs.magnolia-cms.com/product-docs/6.2/Developing/API/Delivery-API.html#_properties).
 
 | Option         | Type     | Description                                                      |
 |----------------|----------|------------------------------------------------------------------|
@@ -76,6 +76,8 @@ When using this tool via the CLI or in your Node.js modules it can be configured
 | depth          | number   | Specifies how deep the node tree will be traversed. (default: 0) |
 | nodeTypes      | string[] | A comma-separated list of allowed node types for depth-0 nodes.  |
 | childNodeTypes | string[] | A comma-separated list of allowed node types for child nodes.    |
+
+If using the CLI use `npx magnolia-mock-server --help` to view more usage information.
 
 ### Endpoints
 
@@ -124,4 +126,4 @@ No, the app only supports JCR data saved in YAML format.
 
 ### Can I configure the node depth and node types to return?
 
-Yes, like the Magnolia delivery endpoint configuration you can filter my node type and tree depth.
+Yes, like the Magnolia delivery endpoint configuration you can filter by node type, child node type, and tree depth.

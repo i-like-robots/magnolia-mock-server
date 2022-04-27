@@ -45,7 +45,7 @@ $ npm install -D magnolia-mock-server
 You can use the tool to serve a directory of YAML files containing your content using `npx` (which is installed with npm):
 
 ```bash
-npx magnolia-mock-server --port 5000 --depth 0 ./content
+npx magnolia-mock-server --port 5000 ./content
 ```
 
 Once running you can access the API via one of its [endpoints](#endpoints).
@@ -63,6 +63,19 @@ try {
   console.error(err);
 }
 ```
+
+### Options
+
+When using this tool via the CLI or in your Node.js modules it can be configured with a number of options. Most of the avilable options are analogous to Magnolia's [delivery API configuration](https://docs.magnolia-cms.com/product-docs/6.2/Developing/API/Delivery-API.html#_properties).
+
+| Option         | Type     | Description                                                      |
+|----------------|----------|------------------------------------------------------------------|
+| port           | number   | Port number to run the mock server on. (default: 5000)           |
+| sourceDir      | string   | Path to the directory containing your YAML files.                |
+| rootPath       | string   | The root path of this endpoint. (default: "pages")               |
+| depth          | number   | Specifies how deep the node tree will be traversed. (default: 0) |
+| nodeTypes      | string[] | A comma-separated list of allowed node types for depth-0 nodes.  |
+| childNodeTypes | string[] | A comma-separated list of allowed node types for child nodes.    |
 
 ### Endpoints
 

@@ -6,7 +6,7 @@ const defaultOptions = {
   port: 5000,
   sourceDir: "./content",
   rootPath: "pages",
-  depth: 10,
+  depth: 0,
   nodeTypes: ["mgnl:page"],
   childNodeTypes: [
     "mgnl:page",

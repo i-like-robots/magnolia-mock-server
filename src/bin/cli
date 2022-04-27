@@ -21,7 +21,7 @@ function parseList(value) {
 commander
   .option(
     "-p, --port <number>",
-    "Port number to run the mock server on",
+    "Port number to run the mock server on.",
     parseNumber,
     5000
   )
@@ -42,7 +42,7 @@ commander
     "A comma-separated list of allowed node types for child nodes.",
     parseList
   )
-  .argument("[dir]", "Path to the directory containing your YAML files")
+  .argument("[dir]", "Path to the directory containing your YAML files.")
   .action((dir, options) => {
     if (dir) {
       try {

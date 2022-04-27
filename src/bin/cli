@@ -38,7 +38,8 @@ commander
         process.exit(1);
       }
     } else {
-      program.help();
+      console.error(`No directory defined.\nSee 'magnolia-mock-server --help'`);
+      process.exit(1);
     }
   });
 

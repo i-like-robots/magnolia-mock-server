@@ -14,6 +14,10 @@ function parseNumber(value) {
   return number;
 }
 
+function parseList(value) {
+  return value.trim().split(",");
+}
+
 commander
   .option(
     "-p, --port <number>",
@@ -23,9 +27,19 @@ commander
   )
   .option(
     "-d, --depth <number>",
-    "How deep the node tree will be traversed",
+    "Specifies how deep the node tree will be traversed.",
     parseNumber,
     0
+  )
+  .option(
+    "-n, --nodeTypes <string>",
+    "A comma-separated list of allowed node types for depth-0 nodes.",
+    parseList
+  )
+  .option(
+    "-c, --childNodeTypes <string>",
+    "A comma-separated list of allowed node types for child nodes.",
+    parseList
   )
   .argument("[dir]", "Path to the directory containing your YAML files")
   .action((dir, options) => {

@@ -31,6 +31,7 @@ commander
     parseNumber,
     0
   )
+  .option("-r, --rootPath <number>", "The root path of this endpoint.", "pages")
   .option(
     "-n, --nodeTypes <string>",
     "A comma-separated list of allowed node types for depth-0 nodes.",
